@@ -2,7 +2,7 @@
   <fieldset :class="[`starability-${kind}`, 'rating']">
     <legend v-if="legend">{{ legend }}</legend>
     <template v-for="(item, index) in items">
-      <input type="radio" :id="uuid(index)" name="rating" :value="item.value" :checked="hasChecked(index)" @change="change($event)">
+      <input v-bind:disabled="disabled" type="radio" :id="uuid(index)" name="rating" :value="item.value" :checked="hasChecked(index)" @change="change($event)">
       <label class="touchable" :for="uuid(index)" :title="item.title || ''">{{ item.label || '' }}</label>
     </template>
   </fieldset>
@@ -24,7 +24,8 @@ export default {
       type: String,
       default: 'basic',
       validator: (val) => ['basic', 'slot', 'grow', 'growRotate', 'fade', 'checkmark'].indexOf(val) > -1
-    }
+    },
+    disabled: Boolean
   },
 
   data () {
@@ -83,7 +84,7 @@ $image-directory-path: '~starability/starability-images';
   }
 
   @if ($hover-enabled) {
-    > input:hover ~ label {
+    > input:not([disabled]):hover ~ label {
       background-position: 0 (-$star-size);
     }
   }
@@ -92,6 +93,9 @@ $image-directory-path: '~starability/starability-images';
     > input:focus + label {
       outline: 1px dotted #999;
     }
+  }
+  > input:disabled+label {
+    cursor: default;
   }
 
   > label {
